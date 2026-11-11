@@ -46,4 +46,3 @@ def test_missing_or_empty_secret_key_raises(monkeypatch: pytest.MonkeyPatch) -> 
     monkeypatch.setenv("SECRET_KEY", "   ")
     with pytest.raises(ValidationError, match="SECRET_KEY must not be empty"):
         Settings(_env_file=None)
-

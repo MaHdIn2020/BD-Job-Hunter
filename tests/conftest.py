@@ -19,4 +19,3 @@ def client() -> Iterator[TestClient]:
     app = create_app()
     with TestClient(app) as test_client:
         yield test_client
-
