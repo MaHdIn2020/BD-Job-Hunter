@@ -129,4 +129,3 @@ def get_saved_job_for_user(db: Session, user: User, saved_job_id: int) -> SavedJ
             detail="Saved job not found.",
         )
     return saved_job
-

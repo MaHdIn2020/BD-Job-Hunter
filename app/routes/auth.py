@@ -251,4 +251,3 @@ def logout_submit(
     request.session.clear()
     set_flash(request, "You have been logged out.", "info")
     return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
-

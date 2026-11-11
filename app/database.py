@@ -89,4 +89,3 @@ def init_db(target_engine: Engine | None = None) -> None:
 
     engine = target_engine or get_engine()
     Base.metadata.create_all(bind=engine)
-

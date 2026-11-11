@@ -78,4 +78,5 @@
 - Conventional Commits: `feat:`, `fix:`, `test:`, `docs:`, `chore:`, `ci:`.
 - One branch per phase: `phase/NN-name`.
 - Before suggesting a commit: lint, tests, then `git status`. Confirm no `.env`, `data/`, `*.db`, CVs.
+- Run the final checks as the LAST step before commit: `ruff format .`, `ruff check .`, `ruff format --check .`, `pytest -q`, `git ls-files --eol`. Never modify files after the checks. Never rewrite file bytes with custom scripts.
 - If a secret was committed: stop, tell the user, tell them to rotate the key.

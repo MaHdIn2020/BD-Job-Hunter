@@ -87,4 +87,3 @@ class Application(Base):
 
     user: Mapped["User"] = relationship("User", back_populates="applications")
     job: Mapped["Job"] = relationship("Job", back_populates="applications")
-
