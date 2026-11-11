@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — BD Job Hunter{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+  <!-- Header Banner -->
+  <div class="flex flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">Candidate Dashboard</h1>
+      <p class="mt-1 text-sm text-slate-600">
+        Track your CV readiness, explore matched roles, and manage your job applications.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a href="/profile" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+        Upload / Edit CV
+      </a>
+      <a href="/jobs" class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+        Discover Jobs
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <section aria-label="Dashboard statistics" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Sample Jobs</p>
+      <p class="mt-2 text-2xl font-bold text-slate-900">{{ sample_jobs | length }}</p>
+      <p class="mt-1 text-xs text-slate-500">Demo listings loaded</p>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Strong Matches (&ge;50%)</p>
+      <p class="mt-2 text-2xl font-bold text-blue-600">2</p>
+      <p class="mt-1 text-xs text-slate-500">Python skill-score preview</p>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Saved Jobs</p>
+      <p class="mt-2 text-2xl font-bold text-slate-900">0</p>
+      <p class="mt-1 text-xs text-slate-500"><a href="/saved" class="text-blue-600 hover:underline">View saved list</a></p>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Tracked Applications</p>
+      <p class="mt-2 text-2xl font-bold text-slate-900">0</p>
+      <p class="mt-1 text-xs text-slate-500"><a href="/tracker" class="text-blue-600 hover:underline">Open tracker</a></p>
+    </div>
+  </section>
+
+  <!-- Sample Recommended Jobs -->
+  <section aria-labelledby="sample-jobs-heading">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 id="sample-jobs-heading" class="text-lg font-bold text-slate-900">Recommended Opportunities (Sample Preview)</h2>
+        <p class="text-xs text-slate-500">All sample listings carry a DEMO badge and are never presented as live vacancies.</p>
+      </div>
+      <a href="/jobs" class="text-sm font-semibold text-blue-600 hover:text-blue-700">See all jobs &rarr;</a>
+    </div>
+
+    <div class="mt-4 grid gap-4 md:grid-cols-2">
+      {% for job in sample_jobs %}
+      <article class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center rounded-md bg-amber-100 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-amber-800">
+                DEMO
+              </span>
+              <span class="text-xs font-medium text-slate-500">{{ job.employment_type }}</span>
+            </div>
+            <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-0.5 text-xs font-semibold text-blue-700">
+              {{ job.match_label }}
+            </span>
+          </div>
+
+          <h3 class="mt-3 text-base font-bold text-slate-900">{{ job.title }}</h3>
+          <p class="text-sm font-medium text-slate-600">{{ job.company }} &middot; {{ job.location }}</p>
+          <p class="mt-2 text-xs text-slate-600">{{ job.summary }}</p>
+
+          <div class="mt-3 flex flex-wrap gap-1.5">
+            {% for skill in job.required_skills %}
+            <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">{{ skill }}</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+          <span>Deadline: {{ job.deadline }}</span>
+          <a href="/jobs" class="font-semibold text-blue-600 hover:text-blue-700">Inspect Match &rarr;</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Empty State Section for Active Applications -->
+  <section aria-labelledby="recent-applications-heading">
+    <h2 id="recent-applications-heading" class="mb-3 text-lg font-bold text-slate-900">Recent Applications</h2>
+    {% set empty_title = "No tracked applications yet" %}
+    {% set empty_message = "Save a job or generate a tailored cover email to start tracking your applications from Interested to Offer Received." %}
+    {% set empty_cta_url = "/jobs" %}
+    {% set empty_cta_label = "Browse Jobs" %}
+    {% include "partials/empty_state.html" %}
+  </section>
+</div>
+{% endblock %}
+

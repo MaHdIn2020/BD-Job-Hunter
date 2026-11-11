@@ -1,0 +1,17 @@
+<div data-empty-state class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
+  <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600 font-bold">
+    0
+  </div>
+  <h3 class="text-base font-semibold text-slate-900">{{ empty_title | default('Nothing here yet') }}</h3>
+  <p class="mx-auto mt-1 max-w-md text-sm text-slate-600">
+    {{ empty_message | default('Get started by uploading your CV or exploring open job listings.') }}
+  </p>
+  {% if empty_cta_url and empty_cta_label %}
+  <div class="mt-4">
+    <a href="{{ empty_cta_url }}" class="inline-flex items-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+      {{ empty_cta_label }}
+    </a>
+  </div>
+  {% endif %}
+</div>
+

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}BD Job Hunter{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/custom.css">
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
+  <!-- Top Navbar -->
+  <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-6">
+        <a href="/" class="flex items-center gap-2 text-lg font-bold tracking-tight text-blue-700">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-sm font-extrabold text-white">BD</span>
+          <span>BD Job Hunter</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-600" aria-label="Main navigation">
+          <a href="/dashboard" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'dashboard' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">Dashboard</a>
+          <a href="/jobs" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'jobs' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">Jobs</a>
+          <a href="/profile" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'profile' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">Profile &amp; CV</a>
+          <a href="/saved" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'saved' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">Saved Jobs</a>
+          <a href="/tracker" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'tracker' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">Tracker</a>
+        </nav>
+      </div>
+
+      <div class="hidden md:flex items-center gap-3">
+        <a href="/login" class="rounded-xl px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Log in</a>
+        <a href="/register" class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Register</a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle navigation menu" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-700 hover:bg-slate-100 md:hidden">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav id="mobile-menu" class="hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 md:hidden" aria-label="Mobile navigation">
+      <div class="flex flex-col space-y-1 text-sm font-medium text-slate-700">
+        <a href="/" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700">Home</a>
+        <a href="/dashboard" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700">Dashboard</a>
+        <a href="/jobs" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700">Jobs</a>
+        <a href="/profile" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700">Profile &amp; CV</a>
+        <a href="/saved" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700">Saved Jobs</a>
+        <a href="/tracker" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700">Application Tracker</a>
+        <div class="mt-2 flex gap-2 border-t border-slate-100 pt-3">
+          <a href="/login" class="flex-1 rounded-xl border border-slate-200 py-2 text-center text-slate-700 hover:bg-slate-50">Log in</a>
+          <a href="/register" class="flex-1 rounded-xl bg-blue-600 py-2 text-center text-white hover:bg-blue-700">Register</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  {% if show_sidebar %}
+  <div class="mx-auto flex w-full max-w-7xl flex-1 gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Desktop Sidebar -->
+    <aside class="hidden w-60 shrink-0 lg:block" aria-label="Sidebar navigation">
+      <div class="sticky top-20 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <p class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Workspace</p>
+        <ul class="mt-2 space-y-1 text-sm font-medium text-slate-700">
+          <li>
+            <a href="/dashboard" class="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'dashboard' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">
+              <span>Overview</span>
+            </a>
+          </li>
+          <li>
+            <a href="/profile" class="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'profile' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">
+              <span>CV &amp; Profile</span>
+            </a>
+          </li>
+          <li>
+            <a href="/jobs" class="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'jobs' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">
+              <span>Discover Jobs</span>
+            </a>
+          </li>
+          <li>
+            <a href="/saved" class="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'saved' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">
+              <span>Saved Jobs</span>
+            </a>
+          </li>
+          <li>
+            <a href="/tracker" class="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-blue-50 hover:text-blue-700 {% if active_page == 'tracker' %}bg-blue-50 text-blue-700 font-semibold{% endif %}">
+              <span>Application Tracker</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-6 rounded-xl bg-blue-50 p-3 text-xs text-blue-900">
+          <p class="font-semibold">Human-in-the-loop</p>
+          <p class="mt-1 text-blue-800">Review before sending. BD Job Hunter never sends emails for you.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main App Content -->
+    <main class="min-w-0 flex-1">
+      {% include "partials/flash.html" %}
+      {% include "partials/loading.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  {% else %}
+  <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+    {% include "partials/flash.html" %}
+    {% include "partials/loading.html" %}
+    {% block full_content %}{% endblock %}
+  </main>
+  {% endif %}
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-200 bg-white py-6 text-xs text-slate-500">
+    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 sm:flex-row sm:px-6 lg:px-8">
+      <p class="font-medium text-slate-700">BD Job Hunter — Built for Bangladeshi students &amp; fresh graduates.</p>
+      <p>Review before sending. BD Job Hunter never sends emails for you.</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
+
