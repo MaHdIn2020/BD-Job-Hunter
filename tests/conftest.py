@@ -16,6 +16,7 @@ os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 from app.config import get_settings  # noqa: E402
 from app.database import Base, create_db_engine, get_db, reset_db_engine  # noqa: E402
 from app.main import create_app  # noqa: E402
+from app.services.ai_service import clear_all_ai_rate_limits  # noqa: E402
 from app.services.security import clear_all_login_attempts  # noqa: E402
 
 CSRF_INPUT_RE = re.compile(r'name="csrf_token"\s+value="([^"]+)"')
@@ -32,6 +33,7 @@ def extract_csrf_token(html: str) -> str:
 def db_engine() -> Iterator[Engine]:
     """Create a fresh in-memory SQLite engine with StaticPool per test."""
     clear_all_login_attempts()
+    clear_all_ai_rate_limits()
     get_settings.cache_clear()
     reset_db_engine()
 
@@ -44,6 +46,7 @@ def db_engine() -> Iterator[Engine]:
         Base.metadata.drop_all(bind=engine)
         engine.dispose()
         clear_all_login_attempts()
+        clear_all_ai_rate_limits()
 
 
 @pytest.fixture

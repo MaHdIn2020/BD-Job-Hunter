@@ -3,7 +3,7 @@
 ## Context
 - Project: FastAPI web app for Bangladeshi students and fresh graduates. CV upload, editable AI profile, job discovery, Python skill-match score, Groq-written application emails, saved jobs, application tracker.
 - Phase plan and scope: `docs/BUILD_PROMPT.md`. Follow it. If this file and the plan conflict, ask the user.
-- Current phase: 2 (the user edits this line after each approved phase).
+- Current phase: 3 (the user edits this line after each approved phase).
 - Stack: Python 3.11+, FastAPI, Uvicorn, Pydantic v2, pydantic-settings, SQLAlchemy 2.0, SQLite, Jinja2, vanilla JS, Tailwind CDN, Groq SDK, pypdf, python-docx, bcrypt, itsdangerous, httpx. Dev: pytest, respx, ruff.
 
 ## Agent behavior

@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% block title %}CV &amp; Profile — BD Job Hunter{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <span class="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+      CV &amp; Profile
+    </span>
+    <h1 class="mt-2 text-2xl font-bold text-slate-900">Candidate Profile &amp; CV Upload</h1>
+    <p class="mt-1 text-sm text-slate-600">
+      Upload a PDF or DOCX CV (or paste text) to extract a suggested profile with AI, then review, edit, and save every field yourself.
+    </p>
+    <p class="mt-2 text-xs text-slate-500">
+      <strong>Privacy note:</strong> Uploaded files are parsed in memory and never stored on disk. Only the filename and extracted plain text are stored in your account so you can re-run extraction, and you can delete the stored CV text at any time.
+    </p>
+  </div>
+
+  {% if error_message %}
+  <div role="alert" data-profile-error class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 shadow-sm">
+    {{ error_message }}
+  </div>
+  {% endif %}
+
+  {% if ai_suggestion_banner %}
+  <div role="status" data-ai-suggestion-banner class="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 shadow-sm">
+    <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+      <div>
+        <p class="font-bold">{{ ai_suggestion_banner }}</p>
+        {% if removed_items_count > 0 %}
+        <p class="mt-1 text-xs font-medium text-amber-800">
+          Removed {{ removed_items_count }} items not found in your CV.
+        </p>
+        {% endif %}
+      </div>
+      <a href="/profile" class="inline-flex shrink-0 items-center justify-center rounded-xl border border-amber-400 bg-white px-3.5 py-1.5 text-xs font-semibold text-amber-900 hover:bg-amber-100">
+        Discard
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Upload & Paste CV Grid -->
+  <div class="grid gap-6 lg:grid-cols-2">
+    <!-- Upload PDF / DOCX Card -->
+    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-base font-bold text-slate-900">1. Upload CV (PDF or DOCX)</h2>
+      <p class="mt-1 text-xs text-slate-500">
+        Maximum size {{ 5 }} MB. Must be an unencrypted PDF or Word (.docx) with selectable text.
+      </p>
+
+      <form method="post" action="/profile/upload" enctype="multipart/form-data" data-show-loading class="mt-4 space-y-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div>
+          <label for="cv_file" class="block text-xs font-semibold uppercase tracking-wide text-slate-600">Select CV File</label>
+          <input
+            id="cv_file"
+            name="cv_file"
+            type="file"
+            accept=".pdf,.docx"
+            required
+            class="mt-1.5 block w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-blue-600 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-blue-700"
+          >
+        </div>
+        <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
+          Upload &amp; Extract Suggestions
+        </button>
+      </form>
+
+      {% if profile.cv_raw_text %}
+      <div class="mt-5 border-t border-slate-100 pt-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+          <span>
+            Stored CV source: <strong data-cv-filename>{{ profile.cv_filename or 'pasted_cv.txt' }}</strong>
+            ({{ profile.cv_raw_text | length }} chars)
+          </span>
+          <div class="flex items-center gap-2">
+            {% if ai_configured %}
+            <form method="post" action="/profile/extract" data-show-loading class="inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit" class="rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100">
+                Re-run AI Suggestion
+              </button>
+            </form>
+            {% else %}
+            <span class="rounded-lg bg-slate-100 px-2.5 py-1 text-xs text-slate-500">AI is not configured</span>
+            {% endif %}
+
+            <form method="post" action="/profile/delete-cv" class="inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit" class="rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-100">
+                Delete stored CV text
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- Paste CV Text Fallback Card -->
+    <section class="rounded-2xl border {% if highlight_paste %}border-blue-400 ring-2 ring-blue-100{% else %}border-slate-200{% endif %} bg-white p-6 shadow-sm">
+      <h2 class="text-base font-bold text-slate-900">2. Paste CV Text (Fallback)</h2>
+      <p class="mt-1 text-xs text-slate-500">
+        If your PDF is scanned or uses non-standard fonts, paste your CV text directly here (20 to 20,000 characters).
+      </p>
+
+      <form method="post" action="/profile/paste" data-show-loading class="mt-4 space-y-3">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div>
+          <label for="cv_text" class="sr-only">Paste CV text</label>
+          <textarea
+            id="cv_text"
+            name="cv_text"
+            rows="4"
+            maxlength="20000"
+            placeholder="Paste your CV text here (education, skills, projects, experience)..."
+            class="block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >{{ profile.cv_raw_text or '' }}</textarea>
+        </div>
+        <button type="submit" class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+          Store Pasted Text &amp; Extract
+        </button>
+      </form>
+    </section>
+  </div>
+
+  <!-- Editable Profile Form -->
+  <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="flex flex-col justify-between gap-2 border-b border-slate-100 pb-4 sm:flex-row sm:items-center">
+      <div>
+        <h2 class="text-lg font-bold text-slate-900">Editable Candidate Profile</h2>
+        <p class="text-xs text-slate-500">
+          Used for Python skill-match scoring and tailored application drafts. Review carefully and click <strong>Save Profile</strong>.
+        </p>
+      </div>
+      {% if not ai_configured %}
+      <span class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+        AI is not configured — manual editing enabled
+      </span>
+      {% endif %}
+    </div>
+
+    <form method="post" action="/profile/save" data-show-loading class="mt-6 space-y-5">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="full_name" class="block text-sm font-medium text-slate-700">Full Name</label>
+          <input
+            id="full_name"
+            name="full_name"
+            type="text"
+            maxlength="200"
+            value="{{ form_data.full_name }}"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-slate-700">Contact Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            maxlength="200"
+            value="{{ form_data.email }}"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >
+        </div>
+
+        <div>
+          <label for="university" class="block text-sm font-medium text-slate-700">University / Institution</label>
+          <input
+            id="university"
+            name="university"
+            type="text"
+            maxlength="200"
+            value="{{ form_data.university }}"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >
+        </div>
+
+        <div>
+          <label for="degree" class="block text-sm font-medium text-slate-700">Degree / Major</label>
+          <input
+            id="degree"
+            name="degree"
+            type="text"
+            maxlength="200"
+            value="{{ form_data.degree }}"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >
+        </div>
+      </div>
+
+      <div>
+        <label for="education" class="block text-sm font-medium text-slate-700">Education Summary</label>
+        <textarea
+          id="education"
+          name="education"
+          rows="2"
+          maxlength="2000"
+          class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+        >{{ form_data.education }}</textarea>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div>
+          <label for="skills" class="block text-sm font-medium text-slate-700">Skills (comma or newline separated)</label>
+          <textarea
+            id="skills"
+            name="skills"
+            rows="3"
+            placeholder="Python, Django, React, Git"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >{{ form_data.skills }}</textarea>
+        </div>
+
+        <div>
+          <label for="programming_languages" class="block text-sm font-medium text-slate-700">Programming Languages (comma/newline)</label>
+          <textarea
+            id="programming_languages"
+            name="programming_languages"
+            rows="3"
+            placeholder="Python, JavaScript"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >{{ form_data.programming_languages }}</textarea>
+        </div>
+
+        <div>
+          <label for="frameworks" class="block text-sm font-medium text-slate-700">Frameworks &amp; Tools (comma/newline)</label>
+          <textarea
+            id="frameworks"
+            name="frameworks"
+            rows="3"
+            placeholder="Django, React, MongoDB"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >{{ form_data.frameworks }}</textarea>
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div>
+          <label for="projects" class="block text-sm font-medium text-slate-700">Projects (one per line)</label>
+          <textarea
+            id="projects"
+            name="projects"
+            rows="4"
+            placeholder="One project per line (commas inside lines are kept)"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >{{ form_data.projects }}</textarea>
+        </div>
+
+        <div>
+          <label for="experience" class="block text-sm font-medium text-slate-700">Experience (one per line)</label>
+          <textarea
+            id="experience"
+            name="experience"
+            rows="4"
+            placeholder="One role/internship per line"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >{{ form_data.experience }}</textarea>
+        </div>
+
+        <div>
+          <label for="certifications" class="block text-sm font-medium text-slate-700">Certifications (one per line)</label>
+          <textarea
+            id="certifications"
+            name="certifications"
+            rows="4"
+            placeholder="One certification per line"
+            class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none"
+          >{{ form_data.certifications }}</textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+        <a href="/profile" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+          Reset Changes
+        </a>
+        <button
+          type="submit"
+          class="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+        >
+          Save Profile
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
+

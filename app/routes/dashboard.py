@@ -84,28 +84,6 @@ def dashboard_page(
     return templates.TemplateResponse(request=request, name="dashboard.html", context=context)
 
 
-@router.get("/profile", response_class=HTMLResponse)
-def profile_shell(
-    request: Request,
-    current_user: User = Depends(get_current_user),
-) -> HTMLResponse:
-    """Render placeholder CV & Profile shell (implemented in Phase 3)."""
-    context = build_template_context(
-        request,
-        current_user=current_user,
-        active_page="profile",
-        show_sidebar=True,
-        section_badge="CV & Profile",
-        page_title="Candidate Profile & CV Upload",
-        page_description="Upload a PDF or DOCX CV and edit your extracted skills.",
-        empty_title="No CV uploaded yet",
-        empty_message="Upload a PDF or DOCX CV to extract your editable candidate profile.",
-        empty_cta_url="/dashboard",
-        empty_cta_label="Return to Dashboard",
-    )
-    return templates.TemplateResponse(request=request, name="shell_page.html", context=context)
-
-
 @router.get("/jobs", response_class=HTMLResponse)
 def jobs_shell(
     request: Request,

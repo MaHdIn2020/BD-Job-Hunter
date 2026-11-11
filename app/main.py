@@ -15,6 +15,7 @@ from app.database import init_db
 from app.deps import LoginRequiredRedirect
 from app.routes.auth import router as auth_router
 from app.routes.dashboard import router as dashboard_router
+from app.routes.profile import router as profile_router
 
 logger = logging.getLogger(__name__)
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -59,6 +60,7 @@ def create_app() -> FastAPI:
 
     application.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
     application.include_router(auth_router)
+    application.include_router(profile_router)
     application.include_router(dashboard_router)
 
     @application.get("/health", tags=["system"])
