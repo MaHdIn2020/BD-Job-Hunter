@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -35,6 +35,13 @@ class Settings(BaseSettings):
                 "SECRET_KEY must not be empty. Set a non-empty SECRET_KEY in your .env file."
             )
         return cleaned
+
+    @model_validator(mode="after")
+    def validate_production_secret_key(self) -> "Settings":
+        """Require SECRET_KEY to be at least 32 characters in production."""
+        if self.ENV.lower() == "production" and len(self.SECRET_KEY) < 32:
+            raise ValueError("SECRET_KEY must be at least 32 characters in production.")
+        return self
 
 
 @lru_cache

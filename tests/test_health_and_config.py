@@ -46,3 +46,17 @@ def test_missing_or_empty_secret_key_raises(monkeypatch: pytest.MonkeyPatch) -> 
     monkeypatch.setenv("SECRET_KEY", "   ")
     with pytest.raises(ValidationError, match="SECRET_KEY must not be empty"):
         Settings(_env_file=None)
+
+
+def test_production_secret_key_must_be_at_least_32_chars(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """In production mode, SECRET_KEY shorter than 32 characters raises ValidationError."""
+    monkeypatch.setenv("ENV", "production")
+    monkeypatch.setenv("SECRET_KEY", "too-short-for-prod")
+    with pytest.raises(ValidationError, match="at least 32 characters"):
+        Settings(_env_file=None)
+
+    monkeypatch.setenv("SECRET_KEY", "a" * 32)
+    settings = Settings(_env_file=None)
+    assert len(settings.SECRET_KEY) == 32

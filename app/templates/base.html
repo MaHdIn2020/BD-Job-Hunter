@@ -26,8 +26,18 @@
       </div>
 
       <div class="hidden md:flex items-center gap-3">
+        {% if current_user %}
+        <span class="text-xs font-medium text-slate-600">{{ current_user.full_name }}</span>
+        <form method="post" action="/logout" class="inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button type="submit" class="rounded-xl border border-slate-200 px-3.5 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">
+            Log out
+          </button>
+        </form>
+        {% else %}
         <a href="/login" class="rounded-xl px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Log in</a>
         <a href="/register" class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">Register</a>
+        {% endif %}
       </div>
 
       <!-- Mobile menu button -->
@@ -48,8 +58,17 @@
         <a href="/saved" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700">Saved Jobs</a>
         <a href="/tracker" class="rounded-lg px-3 py-2 hover:bg-blue-50 hover:text-blue-700">Application Tracker</a>
         <div class="mt-2 flex gap-2 border-t border-slate-100 pt-3">
+          {% if current_user %}
+          <form method="post" action="/logout" class="w-full">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="w-full rounded-xl border border-slate-200 py-2 text-center text-slate-700 hover:bg-slate-50">
+              Log out ({{ current_user.full_name }})
+            </button>
+          </form>
+          {% else %}
           <a href="/login" class="flex-1 rounded-xl border border-slate-200 py-2 text-center text-slate-700 hover:bg-slate-50">Log in</a>
           <a href="/register" class="flex-1 rounded-xl bg-blue-600 py-2 text-center text-white hover:bg-blue-700">Register</a>
+          {% endif %}
         </div>
       </div>
     </nav>
@@ -122,4 +141,3 @@
   <script src="/static/js/app.js"></script>
 </body>
 </html>
-
