@@ -1,0 +1,51 @@
+{
+  "note": "Fake posts. today=2026-11-11. post_3 uses an obfuscated email and is expired.",
+  "posts": [
+    {
+      "id": "post_1_english_open",
+      "text": "WE ARE HIRING!\nJunior Software Engineer - Sample Soft BD\nLocation: Dhaka (Gulshan)\nRequirements:\n- BSc in CSE or related\n- Python and Django\n- Basic knowledge of REST API\n- Git\nSalary: 30,000 - 40,000 BDT\nApplication deadline: 30 November 2026\nSend your CV to careers@samplesoft-bd.example.com with subject 'Junior Software Engineer'.",
+      "expected": {
+        "title": "Junior Software Engineer",
+        "company": "Sample Soft BD",
+        "deadline": "2026-11-30",
+        "apply_email": "careers@samplesoft-bd.example.com",
+        "skills_contains": [
+          "Python",
+          "Django",
+          "REST API",
+          "Git"
+        ],
+        "status_on_2026-11-11": "open"
+      }
+    },
+    {
+      "id": "post_2_bangla_mixed_open",
+      "text": "নিয়োগ বিজ্ঞপ্তি\nপদের নাম: ট্রেইনি ওয়েব ডেভেলপার\nপ্রতিষ্ঠান: ডেমো টেক লিমিটেড\nস্থান: ঢাকা\nযোগ্যতা: JavaScript ও React জানা থাকতে হবে। নতুন গ্র্যাজুয়েটরা আবেদন করতে পারবেন।\nআবেদনের শেষ তারিখ: ১৫ ডিসেম্বর ২০২৬\nআবেদন পাঠান: hr@demotech.example.com",
+      "expected": {
+        "title": "Trainee Web Developer",
+        "company": "Demo Tech Limited",
+        "deadline": "2026-12-15",
+        "apply_email": "hr@demotech.example.com",
+        "skills_contains": [
+          "JavaScript",
+          "React"
+        ],
+        "status_on_2026-11-11": "open"
+      }
+    },
+    {
+      "id": "post_3_expired",
+      "text": "Vacancy: Data Entry Operator\nCompany: Example Traders Ltd, Dhaka\nSkills: MS Excel, typing speed 30 wpm\nDeadline: 20 October 2026\nApply: jobs [at] exampletraders [dot] example",
+      "expected": {
+        "title": "Data Entry Operator",
+        "company": "Example Traders Ltd",
+        "deadline": "2026-10-20",
+        "apply_email": "jobs@exampletraders.example",
+        "skills_contains": [
+          "MS Excel"
+        ],
+        "status_on_2026-11-11": "expired"
+      }
+    }
+  ]
+}

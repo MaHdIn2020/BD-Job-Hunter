@@ -1,0 +1,4 @@
+Tahmid Anwar (SAMPLE, FAKE)
+Skills: Python, JavaScript, React, MongoDB, Django, Git
+Education: BSc CSE, Sample University of Technology, 2026
+Experience: Intern, Demo Tech Ltd, 2025

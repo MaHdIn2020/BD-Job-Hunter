@@ -1,0 +1,41 @@
+# Environments & Secrets
+.env
+.env.*
+!.env.example
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Database & Local Data
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Real CVs (keep tests/fixtures/ allowed)
+*.pdf
+*.docx
+!tests/fixtures/**
+
+# Python Bytecode & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Packaging & Distribution
+build/
+dist/
+*.egg-info/
+
+# IDE & OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
